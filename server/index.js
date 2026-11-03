@@ -67,6 +67,6 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hms').then(
     await UserFactory.create('pharmacist', { name: 'Ravi Kumar', email: 'pharmacy@hms.com', password: 'pharma123' });
     await Medicine.insertMany([{ name: 'Paracetamol 500mg', price: 2, stock: 200 }, { name: 'Amoxicillin 250mg', price: 8, stock: 80 }, { name: 'Cetirizine 10mg', price: 3, stock: 120 }]);
   }
-  const port = process.env.PORT || 5000;
-  app.listen(port, () => console.log(`API running on port ${port}`));
+  app.listen(process.env.PORT || 5000, '0.0.0.0', () => {
+  console.log('API running');
 });
