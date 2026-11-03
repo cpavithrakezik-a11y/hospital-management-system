@@ -1,7 +1,8 @@
 const express = require('express'), cors = require('cors'), jwt = require('jsonwebtoken'), bcrypt = require('bcryptjs'), mongoose = require('mongoose');
 const { User, Patient, Doctor, Pharmacist, Admin, Appointment, Medicine, Prescription } = require('./models');
 const SECRET = process.env.JWT_SECRET || 'hms-dev-secret';
-const app = express(); app.use(cors(), express.json());
+const clientOrigins = process.env.CLIENT_ORIGIN?.split(',').map((origin) => origin.trim()).filter(Boolean);
+const app = express(); app.use(cors({ origin: clientOrigins?.length ? clientOrigins : true }), express.json());
 
 // Factory pattern: one place decides which subclass to instantiate.
 const UserFactory = { create(role, d) {
@@ -66,5 +67,6 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hms').then(
     await UserFactory.create('pharmacist', { name: 'Ravi Kumar', email: 'pharmacy@hms.com', password: 'pharma123' });
     await Medicine.insertMany([{ name: 'Paracetamol 500mg', price: 2, stock: 200 }, { name: 'Amoxicillin 250mg', price: 8, stock: 80 }, { name: 'Cetirizine 10mg', price: 3, stock: 120 }]);
   }
-  app.listen(5000, () => console.log('API running on http://localhost:5000'));
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => console.log(`API running on port ${port}`));
 });

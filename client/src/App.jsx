@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const api = async (p, o = {}) => {
-  const r = await fetch('/api' + p, { ...o, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.token }, body: o.body && JSON.stringify(o.body) });
+  const r = await fetch(API_BASE + '/api' + p, { ...o, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + localStorage.token }, body: o.body && JSON.stringify(o.body) });
   const d = await r.json(); if (!r.ok) throw new Error(d.error || 'Something went wrong'); return d; };
 const post = (p, body, method = 'POST') => api(p, { method, body });
 function useLoad(p) { const [d, s] = useState([]); const l = useCallback(() => api(p).then(s).catch(() => {}), [p]); useEffect(() => { l(); }, [l]); return [d, l]; }

@@ -1,8 +1,33 @@
 # CareLink – Hospital Management System (MERN)
-## Run
+## Run locally
 1. Start MongoDB locally (or set `MONGO_URI`).
-2. `cd server && npm install && npm start`  (API on :5000, seeds demo data)
-3. `cd client && npm install && npm run dev`  (open the URL Vite prints)
+2. `cd server && npm install && npm start` (API on :5000, seeds demo data).
+3. In another terminal, run `cd client && npm install && npm run dev` (open the URL Vite prints).
+
+## Deploy (Render + Vercel)
+
+Deploy the API as a Render **Web Service** and the React app as a Vercel **Project**. Create a MongoDB database (for example, MongoDB Atlas) and allow the Render service to connect to it.
+
+### Render API
+
+- Connect this repository and set **Root Directory** to `server`.
+- **Build Command:** `npm install`
+- **Start Command:** `npm start`
+- Add environment variables:
+  - `MONGO_URI`: your production MongoDB connection string.
+  - `JWT_SECRET`: a long, unique random secret.
+  - `CLIENT_ORIGIN`: set this to your Vercel deployment origin once it is available, such as `https://your-app.vercel.app` (no trailing slash). Multiple comma-separated origins are supported. It can be left unset while initially deploying; set it afterward and redeploy Render.
+
+Render supplies `PORT` automatically. After deployment, copy the service URL, for example `https://your-api.onrender.com`.
+
+### Vercel frontend
+
+- Import the same repository as a Vercel project and set **Root Directory** to `client`.
+- Vercel detects Vite; use **Build Command** `npm run build` and **Output Directory** `dist`.
+- Add the environment variable `VITE_API_URL` with the Render service URL (for example `https://your-api.onrender.com`, without a trailing slash), then redeploy.
+- Once the Vercel URL is known, set that exact URL as Render's `CLIENT_ORIGIN` and redeploy the Render service.
+
+The frontend uses Vite's `/api` proxy only during local development; in production `VITE_API_URL` points requests to the Render API. Keep secrets such as `MONGO_URI` and `JWT_SECRET` in the hosting provider's environment settings, not in frontend variables.
 
 Demo logins: admin@hms.com / admin123 · doctor@hms.com / doctor123 · pharmacy@hms.com / pharma123 · patients self-register.
 
